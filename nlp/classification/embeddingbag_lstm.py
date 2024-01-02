@@ -65,8 +65,10 @@ class TextClassifier(nn.Module):
 
     def forward(self, text, offsets):
         embedded = self.embedding(text, offsets)
+        print(embedded.size())
         out, _ = self.lstm(embedded)
-        return self.fc(out)
+        out = self.fc(out)
+        return out
 
 vocab_size = len(vocab)
 embed_dim = 256
@@ -88,6 +90,8 @@ def train(dataloader):
     for i, (label, text, offsets) in enumerate(dataloader):
         optimizer.zero_grad()
         predicted = model(text, offsets)
+        print(predicted)
+        print(label)
         loss = criterion(predicted, label)
         loss.backward()
         nn.utils.clip_grad_norm_(model.parameters(), 0.1)
